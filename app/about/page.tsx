@@ -1,4 +1,5 @@
 import Navbar from "@/components/Navbar";
+import CmykStrip from "@/components/CmykStrip";
 
 export default function AboutPage() {
   return (
@@ -19,6 +20,8 @@ export default function AboutPage() {
             </h1>
           </div>
         </section>
+
+        <CmykStrip />
       </div>
 
       <section className="mx-auto max-w-[1500px] px-6 py-20 md:px-10 lg:px-14 lg:py-28">
@@ -41,6 +44,53 @@ export default function AboutPage() {
               the focus is simple: practical creative solutions, reliable
               production and work that helps brands become more visible.
             </p>
+
+            {/* Contact & Social Links */}
+            <div className="mt-12 border-t border-black/20 pt-8">
+              <p className="mb-5 text-[10px] uppercase tracking-[0.3em] text-black/40">
+                Connect With Us
+              </p>
+
+              <div className="flex flex-wrap gap-3">
+                <a
+                  href="tel:+94754044966"
+                  className="rounded-full border border-black/25 px-5 py-3 text-[10px] font-medium uppercase tracking-[0.22em] text-black/70 transition duration-300 hover:bg-black hover:text-white"
+                >
+                  Call ↗
+                </a>
+
+                <a
+                  href="https://wa.me/94754044966"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded-full border border-black/25 px-5 py-3 text-[10px] font-medium uppercase tracking-[0.22em] text-black/70 transition duration-300 hover:bg-black hover:text-white"
+                >
+                  WhatsApp ↗
+                </a>
+
+                <a
+                  href="https://www.facebook.com/jdadvertising.galle"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded-full border border-black/25 px-5 py-3 text-[10px] font-medium uppercase tracking-[0.22em] text-black/70 transition duration-300 hover:bg-black hover:text-white"
+                >
+                  Facebook ↗
+                </a>
+
+                <a
+                  href="https://www.instagram.com/jd_advertising_galle/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded-full border border-black/25 px-5 py-3 text-[10px] font-medium uppercase tracking-[0.22em] text-black/70 transition duration-300 hover:bg-black hover:text-white"
+                >
+                  Instagram ↗
+                </a>
+              </div>
+
+              <p className="mt-5 text-sm text-black/50">
+                +94 75 404 4966
+              </p>
+            </div>
           </div>
         </div>
       </section>

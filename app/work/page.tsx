@@ -1,4 +1,5 @@
 import Navbar from "@/components/Navbar";
+import CmykStrip from "@/components/CmykStrip";
 
 export default function WorkPage() {
   return (
@@ -30,6 +31,8 @@ export default function WorkPage() {
           </div>
         </div>
       </section>
+
+      <CmykStrip />
     </main>
   );
 }

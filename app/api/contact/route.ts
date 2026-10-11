@@ -5,12 +5,14 @@ import { z } from "zod";
 const MAX_BODY_SIZE = 20_000;
 
 const serviceSchema = z.enum([
-  "Digital Printing",
-  "Signage",
-  "Stickers & Graphics",
-  "Business Printing",
   "Creative Design",
-  "Finishing Services",
+  "Digital Printing",
+  "Offset Printing",
+  "Signage & Display",
+  "Branding & Advertising",
+  "Printout & Finishing Services",
+  "Personalized Printing & Gifts",
+  "Sticker Cutting & Special Applications",
   "Other",
 ]);
 
@@ -240,8 +242,8 @@ ${data.name} <${data.email}>
                   #ec008c 50%,
                   #ffcb05 50%,
                   #ffcb05 75%,
-                  #ffffff 75%,
-                  #ffffff 100%
+                  #090909 75%,
+                  #090909 100%
                 );
               "
             ></div>

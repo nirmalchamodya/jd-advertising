@@ -1,9 +1,10 @@
 "use client";
 
 import Navbar from "@/components/Navbar";
+import CmykStrip from "@/components/CmykStrip";
 import {
-  ChangeEvent,
-  FormEvent,
+  type ChangeEvent,
+  type FormEvent,
   useState,
 } from "react";
 
@@ -33,12 +34,14 @@ const initialFormData: FormData = {
 };
 
 const serviceOptions = [
-  "Digital Printing",
-  "Signage",
-  "Stickers & Graphics",
-  "Business Printing",
   "Creative Design",
-  "Finishing Services",
+  "Digital Printing",
+  "Offset Printing",
+  "Signage & Display",
+  "Branding & Advertising",
+  "Printout & Finishing Services",
+  "Personalized Printing & Gifts",
+  "Sticker Cutting & Special Applications",
   "Other",
 ];
 
@@ -223,12 +226,7 @@ export default function ContactPage() {
           </div>
         </div>
 
-        <div className="flex h-[4px] w-full">
-          <div className="w-1/4 bg-[#00aeef]" />
-          <div className="w-1/4 bg-[#ec008c]" />
-          <div className="w-1/4 bg-[#ffcb05]" />
-          <div className="w-1/4 bg-white" />
-        </div>
+        <CmykStrip />
       </section>
 
       {/* CONTACT */}
@@ -262,7 +260,9 @@ export default function ContactPage() {
                 steps for your project.
               </p>
 
+              {/* CONTACT INFORMATION */}
               <div className="mt-14 border-t border-black/20">
+                {/* Location */}
                 <div className="grid grid-cols-[100px_1fr] gap-4 border-b border-black/20 py-6">
                   <span className="text-[10px] uppercase tracking-[0.25em] text-black/40">
                     Location
@@ -273,17 +273,86 @@ export default function ContactPage() {
                   </span>
                 </div>
 
+                {/* Phone */}
+                <div className="grid grid-cols-[100px_1fr] gap-4 border-b border-black/20 py-6">
+                  <span className="text-[10px] uppercase tracking-[0.25em] text-black/40">
+                    Phone
+                  </span>
+
+                  <div>
+                    <a
+                      href="tel:+94754044966"
+                      className="text-sm text-black/75 transition hover:text-black"
+                    >
+                      +94 75 404 4966
+                    </a>
+
+                    <div className="mt-2 flex flex-wrap gap-x-5 gap-y-2">
+                      <a
+                        href="tel:+94754044966"
+                        className="text-[10px] font-medium uppercase tracking-[0.22em] text-black/45 transition hover:text-black"
+                      >
+                        Call ↗
+                      </a>
+
+                      <a
+                        href="https://wa.me/94754044966"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[10px] font-medium uppercase tracking-[0.22em] text-black/45 transition hover:text-black"
+                      >
+                        WhatsApp ↗
+                      </a>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Social */}
+                <div className="grid grid-cols-[100px_1fr] gap-4 border-b border-black/20 py-6">
+                  <span className="text-[10px] uppercase tracking-[0.25em] text-black/40">
+                    Social
+                  </span>
+
+                  <div className="flex flex-col gap-3">
+                    <a
+                      href="https://www.facebook.com/jdadvertising.galle"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group flex w-fit items-center gap-3 text-sm text-black/75 transition hover:text-black"
+                    >
+                      Facebook
+                      <span className="text-xs text-black/35 transition-transform duration-300 group-hover:translate-x-1">
+                        ↗
+                      </span>
+                    </a>
+
+                    <a
+                      href="https://www.instagram.com/jd_advertising_galle/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group flex w-fit items-center gap-3 text-sm text-black/75 transition hover:text-black"
+                    >
+                      @jd_advertising_galle
+                      <span className="text-xs text-black/35 transition-transform duration-300 group-hover:translate-x-1">
+                        ↗
+                      </span>
+                    </a>
+                  </div>
+                </div>
+
+                {/* Services */}
                 <div className="grid grid-cols-[100px_1fr] gap-4 border-b border-black/20 py-6">
                   <span className="text-[10px] uppercase tracking-[0.25em] text-black/40">
                     Services
                   </span>
 
                   <span className="text-sm leading-6 text-black/75">
-                    Design · Printing · Signage · Graphics ·
-                    Finishing
+                    Design · Digital & Offset Printing · Signage ·
+                    Branding · Finishing · Gifts
                   </span>
                 </div>
 
+                {/* Enquiry */}
                 <div className="grid grid-cols-[100px_1fr] gap-4 border-b border-black/20 py-6">
                   <span className="text-[10px] uppercase tracking-[0.25em] text-black/40">
                     Enquiry
