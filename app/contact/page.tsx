@@ -3,8 +3,13 @@
 import Navbar from "@/components/Navbar";
 import CmykStrip from "@/components/CmykStrip";
 import {
+  Turnstile,
+  type TurnstileInstance,
+} from "@marsidev/react-turnstile";
+import {
   type ChangeEvent,
   type FormEvent,
+  useRef,
   useState,
 } from "react";
 
@@ -45,6 +50,13 @@ const serviceOptions = [
   "Other",
 ];
 
+/*
+ * Official Cloudflare always-pass development key.
+ * Your real NEXT_PUBLIC_TURNSTILE_SITE_KEY is used in production.
+ */
+const DEVELOPMENT_TURNSTILE_SITE_KEY =
+  "1x00000000000000000000AA";
+
 export default function ContactPage() {
   const [formData, setFormData] =
     useState<FormData>(initialFormData);
@@ -54,6 +66,17 @@ export default function ContactPage() {
       type: "idle",
       message: "",
     });
+
+  const [turnstileToken, setTurnstileToken] =
+    useState<string | null>(null);
+
+  const turnstileRef =
+    useRef<TurnstileInstance | null>(null);
+
+  const turnstileSiteKey =
+    process.env.NODE_ENV === "production"
+      ? process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? ""
+      : DEVELOPMENT_TURNSTILE_SITE_KEY;
 
   function handleChange(
     event: ChangeEvent<
@@ -122,6 +145,15 @@ export default function ContactPage() {
       return;
     }
 
+    if (!turnstileToken) {
+      setSubmission({
+        type: "error",
+        message:
+          "Please complete the security verification before sending your enquiry.",
+      });
+      return;
+    }
+
     setSubmission({
       type: "loading",
       message: "Sending your enquiry...",
@@ -134,7 +166,10 @@ export default function ContactPage() {
           "Content-Type": "application/json",
           Accept: "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          turnstileToken,
+        }),
       });
 
       let result: {
@@ -165,7 +200,6 @@ export default function ContactPage() {
           "Thank you. Your project enquiry has been received successfully.",
       });
     } catch (error) {
-      console.error("Contact form error:", error);
 
       setSubmission({
         type: "error",
@@ -174,6 +208,13 @@ export default function ContactPage() {
             ? error.message
             : "Something went wrong. Please try again.",
       });
+    } finally {
+      /*
+       * Turnstile tokens are single-use.
+       * Always obtain a fresh one after a submission attempt.
+       */
+      setTurnstileToken(null);
+      turnstileRef.current?.reset();
     }
   }
 
@@ -213,10 +254,10 @@ export default function ContactPage() {
 
             <div className="mt-12 flex flex-col justify-between gap-8 border-t border-white/20 pt-7 md:flex-row md:items-end">
               <p className="max-w-xl text-sm leading-6 text-white/60 md:text-base md:leading-7">
-                Tell us what you&apos;re planning. From a
-                single print job to a complete advertising
-                project, we&apos;ll help turn your idea into
-                something people notice.
+                Tell us what you&apos;re planning. From a single
+                print job to a complete advertising project,
+                we&apos;ll help turn your idea into something
+                people notice.
               </p>
 
               <p className="text-xs uppercase tracking-[0.3em] text-white/40">
@@ -255,14 +296,13 @@ export default function ContactPage() {
 
               <p className="mt-8 max-w-md text-base leading-7 text-black/60">
                 Give us a few details about the work you have
-                in mind. We can then discuss the best
-                production approach, requirements and next
-                steps for your project.
+                in mind. We can then discuss the best production
+                approach, requirements and next steps for your
+                project.
               </p>
 
               {/* CONTACT INFORMATION */}
               <div className="mt-14 border-t border-black/20">
-                {/* Location */}
                 <div className="grid grid-cols-[100px_1fr] gap-4 border-b border-black/20 py-6">
                   <span className="text-[10px] uppercase tracking-[0.25em] text-black/40">
                     Location
@@ -273,7 +313,6 @@ export default function ContactPage() {
                   </span>
                 </div>
 
-                {/* Phone */}
                 <div className="grid grid-cols-[100px_1fr] gap-4 border-b border-black/20 py-6">
                   <span className="text-[10px] uppercase tracking-[0.25em] text-black/40">
                     Phone
@@ -307,7 +346,6 @@ export default function ContactPage() {
                   </div>
                 </div>
 
-                {/* Social */}
                 <div className="grid grid-cols-[100px_1fr] gap-4 border-b border-black/20 py-6">
                   <span className="text-[10px] uppercase tracking-[0.25em] text-black/40">
                     Social
@@ -340,7 +378,6 @@ export default function ContactPage() {
                   </div>
                 </div>
 
-                {/* Services */}
                 <div className="grid grid-cols-[100px_1fr] gap-4 border-b border-black/20 py-6">
                   <span className="text-[10px] uppercase tracking-[0.25em] text-black/40">
                     Services
@@ -352,7 +389,6 @@ export default function ContactPage() {
                   </span>
                 </div>
 
-                {/* Enquiry */}
                 <div className="grid grid-cols-[100px_1fr] gap-4 border-b border-black/20 py-6">
                   <span className="text-[10px] uppercase tracking-[0.25em] text-black/40">
                     Enquiry
@@ -380,7 +416,6 @@ export default function ContactPage() {
                 >
                   <label htmlFor="website">
                     Website
-
                     <input
                       id="website"
                       name="website"
@@ -550,6 +585,60 @@ export default function ContactPage() {
                   </div>
                 </div>
 
+                {/* CLOUDFLARE TURNSTILE */}
+                <div className="mt-10 border-t border-black/20 pt-8">
+                  <p className="mb-4 text-[10px] font-medium uppercase tracking-[0.28em] text-black/45">
+                    Security Verification *
+                  </p>
+
+                  {turnstileSiteKey ? (
+                    <Turnstile
+                      ref={turnstileRef}
+                      siteKey={turnstileSiteKey}
+                      options={{
+                        action: "contact_form",
+                        theme: "light",
+                        size: "flexible",
+                        refreshExpired: "auto",
+                      }}
+                      onSuccess={(token) => {
+                        setTurnstileToken(token);
+
+                        if (submission.type === "error") {
+                          setSubmission({
+                            type: "idle",
+                            message: "",
+                          });
+                        }
+                      }}
+                      onExpire={() => {
+                        setTurnstileToken(null);
+                      }}
+                      onError={() => {
+                        setTurnstileToken(null);
+
+                        setSubmission({
+                          type: "error",
+                          message:
+                            "Security verification could not be completed. Please try again.",
+                        });
+                      }}
+                    />
+                  ) : (
+                    <div
+                      role="alert"
+                      className="border-l-2 border-black bg-black/5 px-5 py-4 text-sm leading-6 text-black"
+                    >
+                      Security verification is temporarily
+                      unavailable. Please try again later.
+                    </div>
+                  )}
+
+                  <p className="mt-3 text-[10px] leading-5 text-black/35">
+                    Protected by Cloudflare Turnstile.
+                  </p>
+                </div>
+
                 {/* STATUS */}
                 {submission.type !== "idle" && (
                   <div
@@ -581,7 +670,11 @@ export default function ContactPage() {
 
                   <button
                     type="submit"
-                    disabled={submission.type === "loading"}
+                    disabled={
+                      submission.type === "loading" ||
+                      !turnstileToken ||
+                      !turnstileSiteKey
+                    }
                     className="group flex w-fit items-center gap-5 rounded-full border border-black px-7 py-4 text-xs font-medium uppercase tracking-[0.23em] transition duration-300 hover:bg-black hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     {submission.type === "loading"

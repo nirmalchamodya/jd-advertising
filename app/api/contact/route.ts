@@ -4,6 +4,23 @@ import { z } from "zod";
 
 const MAX_BODY_SIZE = 20_000;
 
+const TURNSTILE_VERIFY_URL =
+  "https://challenges.cloudflare.com/turnstile/v0/siteverify";
+
+const TURNSTILE_ACTION = "contact_form";
+
+const PRODUCTION_HOSTNAMES = new Set([
+  "jdadvertising.lk",
+  "www.jdadvertising.lk",
+]);
+
+/*
+ * Official Cloudflare always-pass test secret.
+ * Used only during local development.
+ */
+const DEVELOPMENT_TURNSTILE_SECRET =
+  "1x0000000000000000000000000000000AA";
+
 const serviceSchema = z.enum([
   "Creative Design",
   "Digital Printing",
@@ -54,21 +71,44 @@ const contactSchema = z
         10,
         "Please provide a little more information about your project."
       )
-      .max(2000, "Your message must be less than 2000 characters."),
+      .max(
+        2000,
+        "Your message must be less than 2000 characters."
+      ),
 
     website: z
       .string()
       .trim()
-      .max(0, "Invalid submission.")
+      .max(500, "Invalid submission.")
+      .optional()
+      .default(""),
+
+    turnstileToken: z
+      .string()
+      .trim()
+      .max(2048, "Invalid security token.")
       .optional()
       .default(""),
   })
   .strict();
 
-type ContactPayload = z.infer<typeof contactSchema>;
+type ContactPayload =
+  z.infer<typeof contactSchema>;
 
-function safeString(value: FormDataEntryValue | null) {
-  return typeof value === "string" ? value : "";
+type TurnstileResponse = {
+  success: boolean;
+  hostname?: string;
+  action?: string;
+  challenge_ts?: string;
+  "error-codes"?: string[];
+};
+
+function safeString(
+  value: FormDataEntryValue | null
+) {
+  return typeof value === "string"
+    ? value
+    : "";
 }
 
 function escapeHtml(value: string) {
@@ -80,42 +120,239 @@ function escapeHtml(value: string) {
     .replace(/'/g, "&#039;");
 }
 
+function getClientIp(
+  request: NextRequest
+) {
+  const forwarded =
+    request.headers.get("x-forwarded-for");
+
+  if (forwarded) {
+    return (
+      forwarded
+        .split(",")[0]
+        ?.trim() || ""
+    );
+  }
+
+  return (
+    request.headers.get("x-real-ip") || ""
+  );
+}
+
+function isAllowedOrigin(
+  request: NextRequest
+) {
+  if (
+    process.env.NODE_ENV !== "production"
+  ) {
+    return true;
+  }
+
+  const origin =
+    request.headers.get("origin");
+
+  /*
+   * Some legitimate non-browser clients may
+   * omit Origin. Turnstile still remains the
+   * authoritative security check.
+   */
+  if (!origin) {
+    return true;
+  }
+
+  return (
+    origin ===
+      "https://www.jdadvertising.lk" ||
+    origin ===
+      "https://jdadvertising.lk"
+  );
+}
+
+async function verifyTurnstile(
+  token: string,
+  request: NextRequest
+): Promise<boolean> {
+  if (
+    !token ||
+    token.length > 2048
+  ) {
+    return false;
+  }
+
+  const isProduction =
+    process.env.NODE_ENV === "production";
+
+  const secret = isProduction
+    ? process.env.TURNSTILE_SECRET_KEY
+    : DEVELOPMENT_TURNSTILE_SECRET;
+
+  if (!secret) {
+    console.error(
+      "Turnstile configuration is missing."
+    );
+    return false;
+  }
+
+  const clientIp = getClientIp(request);
+
+  const body = new URLSearchParams({
+    secret,
+    response: token,
+  });
+
+  if (clientIp) {
+    body.set("remoteip", clientIp);
+  }
+
+  const controller =
+    new AbortController();
+
+  const timeout = setTimeout(() => {
+    controller.abort();
+  }, 8000);
+
+  try {
+    const response = await fetch(
+      TURNSTILE_VERIFY_URL,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type":
+            "application/x-www-form-urlencoded",
+        },
+        body,
+        signal: controller.signal,
+        cache: "no-store",
+      }
+    );
+
+    if (!response.ok) {
+      return false;
+    }
+
+    const result =
+      (await response.json()) as TurnstileResponse;
+
+    if (!result.success) {
+      return false;
+    }
+
+    /*
+     * Ensure the token came from the
+     * contact-form widget.
+     */
+/*
+ * Cloudflare's official development test keys
+ * return action "test", regardless of the action
+ * configured on the widget.
+ *
+ * Therefore action + hostname enforcement is done
+ * only with genuine production Turnstile tokens.
+ */
+if (isProduction) {
+  if (result.action !== TURNSTILE_ACTION) {
+    return false;
+  }
+
+  if (
+    !result.hostname ||
+    !PRODUCTION_HOSTNAMES.has(result.hostname)
+  ) {
+    return false;
+  }
+}
+
+    return true;
+  } catch {
+    return false;
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
 async function parseRequest(
   request: NextRequest
 ): Promise<{
   payload: unknown;
   nativeForm: boolean;
 }> {
-  const contentType = request.headers.get("content-type") || "";
+  const contentType =
+    request.headers.get(
+      "content-type"
+    ) || "";
 
-  if (contentType.includes("application/json")) {
+  if (
+    contentType.includes(
+      "application/json"
+    )
+  ) {
     return {
-      payload: await request.json(),
+      payload:
+        await request.json(),
       nativeForm: false,
     };
   }
 
   if (
-    contentType.includes("application/x-www-form-urlencoded") ||
-    contentType.includes("multipart/form-data")
+    contentType.includes(
+      "application/x-www-form-urlencoded"
+    ) ||
+    contentType.includes(
+      "multipart/form-data"
+    )
   ) {
-    const form = await request.formData();
+    const form =
+      await request.formData();
 
     return {
       payload: {
-        name: safeString(form.get("name")),
-        email: safeString(form.get("email")),
-        phone: safeString(form.get("phone")),
-        company: safeString(form.get("company")),
-        service: safeString(form.get("service")),
-        message: safeString(form.get("message")),
-        website: safeString(form.get("website")),
+        name: safeString(
+          form.get("name")
+        ),
+        email: safeString(
+          form.get("email")
+        ),
+        phone: safeString(
+          form.get("phone")
+        ),
+        company: safeString(
+          form.get("company")
+        ),
+        service: safeString(
+          form.get("service")
+        ),
+        message: safeString(
+          form.get("message")
+        ),
+        website: safeString(
+          form.get("website")
+        ),
+
+        /*
+         * react-turnstile creates
+         * cf-turnstile-response for
+         * native form submission.
+         */
+        turnstileToken:
+          safeString(
+            form.get(
+              "turnstileToken"
+            )
+          ) ||
+          safeString(
+            form.get(
+              "cf-turnstile-response"
+            )
+          ),
       },
+
       nativeForm: true,
     };
   }
 
-  throw new Error("UNSUPPORTED_CONTENT_TYPE");
+  throw new Error(
+    "UNSUPPORTED_CONTENT_TYPE"
+  );
 }
 
 function jsonError(
@@ -127,54 +364,125 @@ function jsonError(
     {
       success: false,
       message,
-      ...(errors ? { errors } : {}),
+      ...(errors
+        ? { errors }
+        : {}),
     },
-    { status }
+    {
+      status,
+      headers: {
+        "Cache-Control":
+          "no-store",
+      },
+    }
   );
 }
 
 function getTransporter() {
-  const host = process.env.SMTP_HOST;
-  const port = Number(process.env.SMTP_PORT);
-  const secure = process.env.SMTP_SECURE === "true";
-  const user = process.env.SMTP_USER;
-  const pass = process.env.SMTP_PASS;
+  const host =
+    process.env.SMTP_HOST;
 
-  if (!host || !port || !user || !pass) {
-    throw new Error("SMTP configuration is incomplete.");
+  const port =
+    Number(
+      process.env.SMTP_PORT
+    );
+
+  const secure =
+    process.env.SMTP_SECURE ===
+    "true";
+
+  const user =
+    process.env.SMTP_USER;
+
+  const pass =
+    process.env.SMTP_PASS;
+
+  if (
+    !host ||
+    !port ||
+    !user ||
+    !pass
+  ) {
+    throw new Error(
+      "SMTP configuration is incomplete."
+    );
   }
 
   return nodemailer.createTransport({
     host,
     port,
     secure,
+
     auth: {
       user,
       pass,
     },
+
+    /*
+     * Avoid unnecessarily long SMTP waits.
+     */
+    connectionTimeout: 10_000,
+    greetingTimeout: 10_000,
+    socketTimeout: 15_000,
   });
 }
 
-async function sendContactEmail(data: ContactPayload) {
-  const smtpUser = process.env.SMTP_USER;
-  const fromEmail = process.env.CONTACT_FROM_EMAIL || smtpUser;
-  const toEmail = process.env.CONTACT_TO_EMAIL;
+async function sendContactEmail(
+  data: ContactPayload
+) {
+  const smtpUser =
+    process.env.SMTP_USER;
 
-  if (!smtpUser || !fromEmail || !toEmail) {
-    throw new Error("Contact email configuration is incomplete.");
+  const fromEmail =
+    process.env
+      .CONTACT_FROM_EMAIL ||
+    smtpUser;
+
+  const toEmail =
+    process.env.CONTACT_TO_EMAIL;
+
+  if (
+    !smtpUser ||
+    !fromEmail ||
+    !toEmail
+  ) {
+    throw new Error(
+      "Contact email configuration is incomplete."
+    );
   }
 
-  const transporter = getTransporter();
+  const transporter =
+    getTransporter();
 
-  const safeName = escapeHtml(data.name);
-  const safeEmail = escapeHtml(data.email);
-  const safePhone = escapeHtml(data.phone || "Not provided");
-  const safeCompany = escapeHtml(data.company || "Not provided");
-  const safeService = escapeHtml(data.service);
-  const safeMessage = escapeHtml(data.message).replace(/\n/g, "<br />");
+  const safeName =
+    escapeHtml(data.name);
+
+  const safeEmail =
+    escapeHtml(data.email);
+
+  const safePhone =
+    escapeHtml(
+      data.phone ||
+        "Not provided"
+    );
+
+  const safeCompany =
+    escapeHtml(
+      data.company ||
+        "Not provided"
+    );
+
+  const safeService =
+    escapeHtml(data.service);
+
+  const safeMessage =
+    escapeHtml(
+      data.message
+    ).replace(/\n/g, "<br />");
 
   await transporter.sendMail({
-    from: `"JD Advertising Website" <${fromEmail}>`,
+    from:
+      `"JD Advertising Website" <${fromEmail}>`,
 
     to: toEmail,
 
@@ -183,7 +491,8 @@ async function sendContactEmail(data: ContactPayload) {
       address: data.email,
     },
 
-    subject: `New JD Advertising Enquiry - ${data.service}`,
+    subject:
+      `New JD Advertising Enquiry - ${data.service}`,
 
     text: `
 NEW WEBSITE ENQUIRY
@@ -199,7 +508,7 @@ PROJECT DETAILS
 ${data.message}
 
 ----------------------------------------
-Submitted through the JD Advertising website.
+Submitted securely through the JD Advertising website.
 
 Replying to this email will reply directly to:
 ${data.name} <${data.email}>
@@ -272,7 +581,11 @@ ${data.name} <${data.email}>
             </h1>
           </div>
 
-          <div style="padding: 32px;">
+          <div
+            style="
+              padding: 32px;
+            "
+          >
             <p
               style="
                 margin: 0 0 28px;
@@ -280,7 +593,8 @@ ${data.name} <${data.email}>
                 line-height: 1.6;
               "
             >
-              A new enquiry has been submitted through the JD Advertising website.
+              A new verified enquiry has been submitted
+              through the JD Advertising website.
             </p>
 
             <table
@@ -400,7 +714,11 @@ ${data.name} <${data.email}>
               </tr>
             </table>
 
-            <div style="margin-top: 34px;">
+            <div
+              style="
+                margin-top: 34px;
+              "
+            >
               <p
                 style="
                   margin: 0 0 12px;
@@ -445,26 +763,52 @@ ${data.name} <${data.email}>
   });
 }
 
-export async function POST(request: NextRequest) {
+export async function POST(
+  request: NextRequest
+) {
   try {
     /*
-     * 1. Basic request size protection
+     * 1. Only allow requests from our
+     * production website when Origin exists.
      */
-    const contentLength = request.headers.get("content-length");
+    if (!isAllowedOrigin(request)) {
+      return jsonError(
+        "Request rejected.",
+        403
+      );
+    }
+
+    /*
+     * 2. Basic body-size protection.
+     */
+    const contentLength =
+      request.headers.get(
+        "content-length"
+      );
 
     if (contentLength) {
-      const parsedLength = Number.parseInt(contentLength, 10);
+      const parsedLength =
+        Number.parseInt(
+          contentLength,
+          10
+        );
 
       if (
-        Number.isFinite(parsedLength) &&
-        parsedLength > MAX_BODY_SIZE
+        Number.isFinite(
+          parsedLength
+        ) &&
+        parsedLength >
+          MAX_BODY_SIZE
       ) {
-        return jsonError("Request is too large.", 413);
+        return jsonError(
+          "Request is too large.",
+          413
+        );
       }
     }
 
     /*
-     * 2. Parse request
+     * 3. Parse request.
      */
     let parsedRequest: {
       payload: unknown;
@@ -472,31 +816,46 @@ export async function POST(request: NextRequest) {
     };
 
     try {
-      parsedRequest = await parseRequest(request);
+      parsedRequest =
+        await parseRequest(
+          request
+        );
     } catch (error) {
       if (
-        error instanceof Error &&
-        error.message === "UNSUPPORTED_CONTENT_TYPE"
+        error instanceof
+          Error &&
+        error.message ===
+          "UNSUPPORTED_CONTENT_TYPE"
       ) {
-        return jsonError("Invalid request format.", 415);
+        return jsonError(
+          "Invalid request format.",
+          415
+        );
       }
 
-      return jsonError("Invalid request data.", 400);
+      return jsonError(
+        "Invalid request data.",
+        400
+      );
     }
 
     /*
-     * 3. Validate request
+     * 4. Strict schema validation.
      */
-    const validation = contactSchema.safeParse(
-      parsedRequest.payload
-    );
+    const validation =
+      contactSchema.safeParse(
+        parsedRequest.payload
+      );
 
     if (!validation.success) {
-      if (parsedRequest.nativeForm) {
-        const redirectUrl = new URL(
-          "/contact",
-          request.url
-        );
+      if (
+        parsedRequest.nativeForm
+      ) {
+        const redirectUrl =
+          new URL(
+            "/contact",
+            request.url
+          );
 
         redirectUrl.searchParams.set(
           "error",
@@ -512,26 +871,42 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         {
           success: false,
+
           message:
-            validation.error.issues[0]?.message ||
+            validation.error
+              .issues[0]
+              ?.message ||
             "Please check the information you entered.",
+
           errors:
-            validation.error.flatten().fieldErrors,
+            validation.error
+              .flatten()
+              .fieldErrors,
         },
-        { status: 400 }
+        {
+          status: 400,
+          headers: {
+            "Cache-Control":
+              "no-store",
+          },
+        }
       );
     }
 
-    const data = validation.data;
+    const data =
+      validation.data;
 
     /*
-     * 4. Honeypot
+     * 5. Honeypot.
      *
-     * Bots should think the request succeeded,
-     * but no email will actually be sent.
+     * Pretend success to obvious bots,
+     * but do not verify Turnstile or
+     * send email.
      */
     if (data.website) {
-      if (parsedRequest.nativeForm) {
+      if (
+        parsedRequest.nativeForm
+      ) {
         return NextResponse.redirect(
           new URL(
             "/contact?sent=1",
@@ -547,36 +922,62 @@ export async function POST(request: NextRequest) {
           message:
             "Thank you. Your enquiry has been received.",
         },
-        { status: 200 }
+        {
+          status: 200,
+          headers: {
+            "Cache-Control":
+              "no-store",
+          },
+        }
       );
     }
 
     /*
-     * 5. Send email
+     * 6. Mandatory Cloudflare
+     * Turnstile server validation.
      */
-    await sendContactEmail(data);
+    const turnstileValid =
+      await verifyTurnstile(
+        data.turnstileToken,
+        request
+      );
+
+    if (!turnstileValid) {
+      return jsonError(
+        "Security verification failed. Please refresh the verification and try again.",
+        403
+      );
+    }
 
     /*
-     * 6. Development logging
+     * 7. Only after successful
+     * Turnstile verification do
+     * we contact Gmail SMTP.
+     */
+    await sendContactEmail(
+      data
+    );
+
+    /*
+     * Do not write customer names,
+     * emails, phone numbers or
+     * messages into production logs.
      */
     if (
       process.env.NODE_ENV ===
       "development"
     ) {
       console.log(
-        "Contact enquiry emailed successfully:",
-        {
-          name: data.name,
-          email: data.email,
-          service: data.service,
-        }
+        "Verified contact enquiry emailed successfully."
       );
     }
 
     /*
-     * 7. Native HTML fallback
+     * Native form fallback.
      */
-    if (parsedRequest.nativeForm) {
+    if (
+      parsedRequest.nativeForm
+    ) {
       return NextResponse.redirect(
         new URL(
           "/contact?sent=1",
@@ -586,21 +987,30 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    /*
-     * 8. Normal React response
-     */
     return NextResponse.json(
       {
         success: true,
         message:
           "Thank you. Your project enquiry has been sent successfully.",
       },
-      { status: 200 }
+      {
+        status: 200,
+        headers: {
+          "Cache-Control":
+            "no-store",
+        },
+      }
     );
   } catch (error) {
+    /*
+     * Log enough for diagnostics
+     * without recording customer data.
+     */
     console.error(
       "Contact API error:",
-      error
+      error instanceof Error
+        ? error.message
+        : "Unknown server error"
     );
 
     return NextResponse.json(
@@ -609,7 +1019,13 @@ export async function POST(request: NextRequest) {
         message:
           "We could not send your enquiry at this time. Please try again later.",
       },
-      { status: 500 }
+      {
+        status: 500,
+        headers: {
+          "Cache-Control":
+            "no-store",
+        },
+      }
     );
   }
 }
@@ -618,12 +1034,15 @@ export async function GET() {
   return NextResponse.json(
     {
       success: false,
-      message: "Method not allowed.",
+      message:
+        "Method not allowed.",
     },
     {
       status: 405,
       headers: {
         Allow: "POST",
+        "Cache-Control":
+          "no-store",
       },
     }
   );
