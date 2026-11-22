@@ -42,6 +42,16 @@ const projects: WorkProject[] = [
   },
   {
     number: "03",
+    title: "Capital Restaurant",
+    category: "Restaurant Menu Design",
+    description:
+      "Kraft-style restaurant menu presentation featuring illustrated food graphics and distinctive typography.",
+    image: "/work/capital_restaurant_menu_quality_100.jpeg",
+    alt: "Capital Restaurant kraft-style menu covers featuring food illustrations.",
+    aspect: "aspect-[3/2]",
+  },
+  {
+    number: "04",
     title: "Citypak",
     category: "Commercial Branding",
     description:
@@ -51,7 +61,17 @@ const projects: WorkProject[] = [
     aspect: "aspect-[5/4]",
   },
   {
-    number: "04",
+    number: "05",
+    title: "Cinnamon Leaf Oil",
+    category: "Product Labels & Packaging",
+    description:
+      "Botanical-inspired product label design for cinnamon leaf oil, combining natural colours and clear branding.",
+    image: "/work/cinnamon_leaf_oil_quality_100.jpeg",
+    alt: "Cinnamon leaf oil bottle featuring a green botanical product label.",
+    aspect: "aspect-[2/3]",
+  },
+  {
+    number: "06",
     title: "Emerald Resort",
     category: "Menu Printing",
     description:
@@ -61,7 +81,17 @@ const projects: WorkProject[] = [
     aspect: "aspect-[2/3]",
   },
   {
-    number: "05",
+    number: "07",
+    title: "The Dias Villa",
+    category: "Exterior Signage",
+    description:
+      "Property name and number signage featuring raised lettering, a natural wood finish and integrated illumination.",
+    image: "/work/the_dias_villa_quality_100.jpeg",
+    alt: "The Dias Villa exterior sign with raised lettering and illuminated number 41.",
+    aspect: "aspect-[3/2]",
+  },
+  {
+    number: "08",
     title: "Amari",
     category: "Large-Format Printing",
     description:
@@ -71,7 +101,17 @@ const projects: WorkProject[] = [
     aspect: "aspect-square",
   },
   {
-    number: "06",
+    number: "09",
+    title: "Wok & Bowl",
+    category: "Restaurant Menu Design",
+    description:
+      "Black-and-yellow restaurant menu presentation featuring detailed food selections and bold visual styling.",
+    image: "/work/wok_and_bowl_special_menu_quality_100.jpeg",
+    alt: "Wok and Bowl restaurant special menu with black and yellow printed graphics.",
+    aspect: "aspect-[3/2]",
+  },
+  {
+    number: "10",
     title: "Red Lobster",
     category: "Premium Menu Covers",
     description:
@@ -81,7 +121,17 @@ const projects: WorkProject[] = [
     aspect: "aspect-[2/3]",
   },
   {
-    number: "07",
+    number: "11",
+    title: "NSBM Sports Fiesta 2026",
+    category: "Custom Awards & Recognition",
+    description:
+      "Commemorative award presentation featuring sports-themed graphics and personalized recognition details.",
+    image: "/work/nsbm_sports_fiesta_award_quality_100.jpeg",
+    alt: "NSBM Sports Fiesta 2026 commemorative award displayed inside a clear presentation case.",
+    aspect: "aspect-[2/3]",
+  },
+  {
+    number: "12",
     title: "Salon Secret",
     category: "Glass Branding",
     description:
@@ -91,7 +141,7 @@ const projects: WorkProject[] = [
     aspect: "aspect-[2/3]",
   },
   {
-    number: "08",
+    number: "13",
     title: "Custom Photo Frames",
     category: "Personalized Printing",
     description:
@@ -221,6 +271,7 @@ export default function WorkGallery() {
           </p>
         </div>
 
+        {/* MASONRY GRID */}
         <div className="columns-1 gap-8 md:columns-2 lg:gap-12">
           {projects.map((project, index) => (
             <article
@@ -250,6 +301,7 @@ export default function WorkGallery() {
                 </div>
               </button>
 
+              {/* PROJECT DESCRIPTION */}
               <div className="mt-5 flex items-start gap-5 border-t border-black/15 pt-5">
                 <span className="shrink-0 pt-1 text-xs font-medium tracking-[0.2em] text-black/35">
                   {project.number}

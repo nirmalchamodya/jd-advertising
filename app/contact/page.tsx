@@ -1,11 +1,21 @@
+
 "use client";
 
 import Navbar from "@/components/Navbar";
 import CmykStrip from "@/components/CmykStrip";
+
+import {
+  FaFacebookF,
+  FaInstagram,
+  FaWhatsapp,
+  FaPhoneAlt,
+} from "react-icons/fa";
+
 import {
   Turnstile,
   type TurnstileInstance,
 } from "@marsidev/react-turnstile";
+
 import {
   type ChangeEvent,
   type FormEvent,
@@ -52,7 +62,7 @@ const serviceOptions = [
 
 /*
  * Official Cloudflare always-pass development key.
- * Your real NEXT_PUBLIC_TURNSTILE_SITE_KEY is used in production.
+ * The real NEXT_PUBLIC_TURNSTILE_SITE_KEY is used in production.
  */
 const DEVELOPMENT_TURNSTILE_SITE_KEY =
   "1x00000000000000000000AA";
@@ -200,7 +210,6 @@ export default function ContactPage() {
           "Thank you. Your project enquiry has been received successfully.",
       });
     } catch (error) {
-
       setSubmission({
         type: "error",
         message:
@@ -209,10 +218,7 @@ export default function ContactPage() {
             : "Something went wrong. Please try again.",
       });
     } finally {
-      /*
-       * Turnstile tokens are single-use.
-       * Always obtain a fresh one after a submission attempt.
-       */
+      // Turnstile tokens are single-use.
       setTurnstileToken(null);
       turnstileRef.current?.reset();
     }
@@ -303,6 +309,7 @@ export default function ContactPage() {
 
               {/* CONTACT INFORMATION */}
               <div className="mt-14 border-t border-black/20">
+                {/* LOCATION */}
                 <div className="grid grid-cols-[100px_1fr] gap-4 border-b border-black/20 py-6">
                   <span className="text-[10px] uppercase tracking-[0.25em] text-black/40">
                     Location
@@ -313,6 +320,7 @@ export default function ContactPage() {
                   </span>
                 </div>
 
+                {/* PHONE & WHATSAPP */}
                 <div className="grid grid-cols-[100px_1fr] gap-4 border-b border-black/20 py-6">
                   <span className="text-[10px] uppercase tracking-[0.25em] text-black/40">
                     Phone
@@ -326,42 +334,55 @@ export default function ContactPage() {
                       +94 75 404 4966
                     </a>
 
-                    <div className="mt-2 flex flex-wrap gap-x-5 gap-y-2">
+                    <div className="mt-3 flex flex-wrap gap-x-6 gap-y-3">
                       <a
                         href="tel:+94754044966"
-                        className="text-[10px] font-medium uppercase tracking-[0.22em] text-black/45 transition hover:text-black"
+                        className="group flex w-fit items-center gap-2 text-[10px] font-medium uppercase tracking-[0.22em] text-black/50 transition hover:text-black"
                       >
-                        Call ↗
+                        <FaPhoneAlt
+                          aria-hidden="true"
+                          className="h-3 w-3 shrink-0 transition-colors duration-300 group-hover:text-[#00aeef]"
+                        />
+
+                        <span>Call</span>
                       </a>
 
                       <a
                         href="https://wa.me/94754044966"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-[10px] font-medium uppercase tracking-[0.22em] text-black/45 transition hover:text-black"
+                        className="group flex w-fit items-center gap-2 text-[10px] font-medium uppercase tracking-[0.22em] text-black/50 transition hover:text-black"
                       >
-                        WhatsApp ↗
+                        <FaWhatsapp
+                          aria-hidden="true"
+                          className="h-4 w-4 shrink-0 transition-colors duration-300 group-hover:text-[#25D366]"
+                        />
+
+                        <span>WhatsApp</span>
                       </a>
                     </div>
                   </div>
                 </div>
 
+                {/* SOCIAL */}
                 <div className="grid grid-cols-[100px_1fr] gap-4 border-b border-black/20 py-6">
                   <span className="text-[10px] uppercase tracking-[0.25em] text-black/40">
                     Social
                   </span>
 
-                  <div className="flex flex-col gap-3">
+                  <div className="flex flex-col gap-4">
                     <a
                       href="https://www.facebook.com/jdadvertising.galle"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="group flex w-fit items-center gap-3 text-sm text-black/75 transition hover:text-black"
                     >
-                      Facebook
-                      <span className="text-xs text-black/35 transition-transform duration-300 group-hover:translate-x-1">
-                        ↗
-                      </span>
+                      <FaFacebookF
+                        aria-hidden="true"
+                        className="h-4 w-4 shrink-0 transition-colors duration-300 group-hover:text-[#1877F2]"
+                      />
+
+                      <span>Facebook</span>
                     </a>
 
                     <a
@@ -370,25 +391,29 @@ export default function ContactPage() {
                       rel="noopener noreferrer"
                       className="group flex w-fit items-center gap-3 text-sm text-black/75 transition hover:text-black"
                     >
-                      @jd_advertising_galle
-                      <span className="text-xs text-black/35 transition-transform duration-300 group-hover:translate-x-1">
-                        ↗
-                      </span>
+                      <FaInstagram
+                        aria-hidden="true"
+                        className="h-4 w-4 shrink-0 transition-colors duration-300 group-hover:text-[#E4405F]"
+                      />
+
+                      <span>@jd_advertising_galle</span>
                     </a>
                   </div>
                 </div>
 
+                {/* SERVICES */}
                 <div className="grid grid-cols-[100px_1fr] gap-4 border-b border-black/20 py-6">
                   <span className="text-[10px] uppercase tracking-[0.25em] text-black/40">
                     Services
                   </span>
 
                   <span className="text-sm leading-6 text-black/75">
-                    Design · Digital & Offset Printing · Signage ·
-                    Branding · Finishing · Gifts
+                    Design · Digital &amp; Offset Printing ·
+                    Signage · Branding · Finishing · Gifts
                   </span>
                 </div>
 
+                {/* ENQUIRY */}
                 <div className="grid grid-cols-[100px_1fr] gap-4 border-b border-black/20 py-6">
                   <span className="text-[10px] uppercase tracking-[0.25em] text-black/40">
                     Enquiry
@@ -409,7 +434,7 @@ export default function ContactPage() {
                 method="post"
                 action="/api/contact"
               >
-                {/* Honeypot */}
+                {/* HONEYPOT */}
                 <div
                   aria-hidden="true"
                   className="absolute -left-[9999px] h-0 w-0 overflow-hidden"
@@ -652,8 +677,8 @@ export default function ContactPage() {
                       submission.type === "success"
                         ? "border-black bg-black/5 text-black"
                         : submission.type === "error"
-                          ? "border-black bg-black/5 text-black"
-                          : "border-black/30 bg-black/[0.03] text-black/60"
+                        ? "border-black bg-black/5 text-black"
+                        : "border-black/30 bg-black/[0.03] text-black/60"
                     }`}
                   >
                     {submission.message}
@@ -707,7 +732,6 @@ export default function ContactPage() {
             <h2 className="max-w-5xl text-5xl font-semibold uppercase leading-[0.88] tracking-[-0.055em] md:text-7xl lg:text-[7rem]">
               Your Idea.
               <br />
-
               <span className="text-white/30">
                 Our Production.
               </span>
