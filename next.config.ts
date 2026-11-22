@@ -1,3 +1,4 @@
+
 import type { NextConfig } from "next";
 
 const isDevelopment =
@@ -31,7 +32,8 @@ const ContentSecurityPolicy = `
     https://challenges.cloudflare.com;
 
   frame-src
-    https://challenges.cloudflare.com;
+    https://challenges.cloudflare.com
+    https://www.google.com;
 
   media-src
     'self'
@@ -109,7 +111,7 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
 
   async headers() {
-    /*
+    /**
      * Keep local development simple.
      * Production receives the complete
      * security header policy.
