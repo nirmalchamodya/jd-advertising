@@ -7,7 +7,10 @@ import {
   FaInstagram,
   FaWhatsapp,
   FaPhoneAlt,
+  FaEnvelope,
 } from "react-icons/fa";
+
+import { FaTiktok } from "react-icons/fa6";
 
 const footerLinks = [
   { label: "Home", href: "/" },
@@ -28,7 +31,6 @@ export default function Footer() {
       <div className="px-6 md:px-10 lg:px-14">
         <div className="mx-auto max-w-[1500px]">
           <div className="grid gap-10 border-b border-white/15 py-12 md:grid-cols-3 md:items-start">
-
             {/* JD ADVERTISING */}
             <div>
               <p className="text-[10px] uppercase tracking-[0.28em] text-white/35">
@@ -80,14 +82,13 @@ export default function Footer() {
               </nav>
             </div>
 
-            {/* SOCIAL LINKS */}
+            {/* CONNECT */}
             <div>
               <p className="text-[10px] uppercase tracking-[0.28em] text-white/35">
                 Connect
               </p>
 
               <div className="mt-4 flex flex-col gap-4">
-
                 {/* FACEBOOK */}
                 <a
                   href="https://www.facebook.com/jdadvertising.galle"
@@ -99,6 +100,7 @@ export default function Footer() {
                     aria-hidden="true"
                     className="h-4 w-4 shrink-0 transition-colors duration-300 group-hover:text-[#1877F2]"
                   />
+
                   <span>Facebook</span>
                 </a>
 
@@ -113,7 +115,23 @@ export default function Footer() {
                     aria-hidden="true"
                     className="h-4 w-4 shrink-0 transition-colors duration-300 group-hover:text-[#E4405F]"
                   />
+
                   <span>Instagram</span>
+                </a>
+
+                {/* TIKTOK */}
+                <a
+                  href="https://www.tiktok.com/@jdadvertising"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group flex w-fit items-center gap-3 text-sm text-white/55 transition duration-300 hover:text-white"
+                >
+                  <FaTiktok
+                    aria-hidden="true"
+                    className="h-4 w-4 shrink-0 transition-colors duration-300 group-hover:text-[#ff0050]"
+                  />
+
+                  <span>TikTok</span>
                 </a>
 
                 {/* WHATSAPP */}
@@ -127,6 +145,7 @@ export default function Footer() {
                     aria-hidden="true"
                     className="h-4 w-4 shrink-0 transition-colors duration-300 group-hover:text-[#25D366]"
                   />
+
                   <span>WhatsApp</span>
                 </a>
 
@@ -139,13 +158,29 @@ export default function Footer() {
                     aria-hidden="true"
                     className="h-3.5 w-3.5 shrink-0 transition-colors duration-300 group-hover:text-[#00aeef]"
                   />
+
                   <span>+94 75 404 4966</span>
+                </a>
+
+                {/* EMAIL */}
+                <a
+                  href="mailto:jdadvertising97@gmail.com"
+                  className="group flex w-fit items-center gap-3 text-sm text-white/55 transition duration-300 hover:text-white"
+                >
+                  <FaEnvelope
+                    aria-hidden="true"
+                    className="h-4 w-4 shrink-0 transition-colors duration-300 group-hover:text-[#00aeef]"
+                  />
+
+                  <span className="break-all">
+                    jdadvertising97@gmail.com
+                  </span>
                 </a>
               </div>
             </div>
           </div>
 
-          {/* BOTTOM */}
+          {/* FOOTER BOTTOM */}
           <div className="flex flex-col gap-4 py-7 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-[10px] uppercase tracking-[0.22em] text-white/30">
               © 2026 JD Advertising. All rights reserved.

@@ -7,13 +7,16 @@ import {
   FaInstagram,
   FaWhatsapp,
   FaPhoneAlt,
+  FaEnvelope,
 } from "react-icons/fa";
 
-// JD Advertising's official Google Maps listing
+import { FaTiktok } from "react-icons/fa6";
+
+// JD Advertising Google Maps listing
 const GOOGLE_MAPS_LINK =
   "https://maps.app.goo.gl/LFtWsan13nuwPiZR8";
 
-// Exact business coordinates with a map marker
+// Exact location coordinates
 const GOOGLE_MAPS_EMBED =
   "https://www.google.com/maps?q=6.1893402%2C80.0985342&z=18&output=embed";
 
@@ -44,14 +47,13 @@ export default function AboutPage() {
       {/* ABOUT CONTENT */}
       <section className="mx-auto max-w-[1500px] px-6 py-20 md:px-10 lg:px-14 lg:py-28">
         <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
-          {/* LEFT COLUMN */}
+          {/* LEFT COLUMN - LOCATION */}
           <div>
             <p className="text-xs uppercase tracking-[0.35em] text-black/45">
               Who We Are
             </p>
 
             <div className="mt-8 max-w-[540px]">
-              {/* EXACT LOCATION MAP */}
               <div className="overflow-hidden border border-black/15 bg-white">
                 <iframe
                   src={GOOGLE_MAPS_EMBED}
@@ -63,7 +65,6 @@ export default function AboutPage() {
                 />
               </div>
 
-              {/* LOCATION DETAILS */}
               <div className="mt-5 flex flex-wrap items-end justify-between gap-5">
                 <div>
                   <p className="text-[10px] uppercase tracking-[0.28em] text-black/40">
@@ -91,7 +92,7 @@ export default function AboutPage() {
             </div>
           </div>
 
-          {/* RIGHT COLUMN */}
+          {/* RIGHT COLUMN - ABOUT INFORMATION */}
           <div>
             <p className="max-w-2xl text-xl leading-8 text-black/70">
               JD Advertising provides design, digital printing,
@@ -106,7 +107,7 @@ export default function AboutPage() {
               that helps brands become more visible.
             </p>
 
-            {/* SOCIAL LINKS */}
+            {/* CONTACT & SOCIAL LINKS */}
             <div className="mt-12 border-t border-black/20 pt-8">
               <p className="mb-5 text-[10px] uppercase tracking-[0.3em] text-black/40">
                 Connect With Us
@@ -122,6 +123,7 @@ export default function AboutPage() {
                     aria-hidden="true"
                     className="h-3 w-3 shrink-0 transition-colors duration-300 group-hover:text-[#00aeef]"
                   />
+
                   <span>Call</span>
                 </a>
 
@@ -136,6 +138,7 @@ export default function AboutPage() {
                     aria-hidden="true"
                     className="h-4 w-4 shrink-0 transition-colors duration-300 group-hover:text-[#25D366]"
                   />
+
                   <span>WhatsApp</span>
                 </a>
 
@@ -150,6 +153,7 @@ export default function AboutPage() {
                     aria-hidden="true"
                     className="h-3.5 w-3.5 shrink-0 transition-colors duration-300 group-hover:text-[#1877F2]"
                   />
+
                   <span>Facebook</span>
                 </a>
 
@@ -164,13 +168,55 @@ export default function AboutPage() {
                     aria-hidden="true"
                     className="h-4 w-4 shrink-0 transition-colors duration-300 group-hover:text-[#E4405F]"
                   />
+
                   <span>Instagram</span>
+                </a>
+
+                {/* TIKTOK */}
+                <a
+                  href="https://www.tiktok.com/@jdadvertising"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group flex items-center gap-3 rounded-full border border-black/25 px-5 py-3 text-[10px] font-medium uppercase tracking-[0.22em] text-black/70 transition duration-300 hover:bg-black hover:text-white"
+                >
+                  <FaTiktok
+                    aria-hidden="true"
+                    className="h-4 w-4 shrink-0 transition-colors duration-300 group-hover:text-[#ff0050]"
+                  />
+
+                  <span>TikTok</span>
+                </a>
+
+                {/* EMAIL */}
+                <a
+                  href="mailto:jdadvertising97@gmail.com"
+                  className="group flex items-center gap-3 rounded-full border border-black/25 px-5 py-3 text-[10px] font-medium uppercase tracking-[0.22em] text-black/70 transition duration-300 hover:bg-black hover:text-white"
+                >
+                  <FaEnvelope
+                    aria-hidden="true"
+                    className="h-3.5 w-3.5 shrink-0 transition-colors duration-300 group-hover:text-[#00aeef]"
+                  />
+
+                  <span>Email</span>
                 </a>
               </div>
 
-              <p className="mt-5 text-sm text-black/50">
-                +94 75 404 4966
-              </p>
+              {/* CONTACT DETAILS */}
+              <div className="mt-5 flex flex-col gap-2">
+                <a
+                  href="tel:+94754044966"
+                  className="w-fit text-sm text-black/50 transition-colors duration-300 hover:text-black"
+                >
+                  +94 75 404 4966
+                </a>
+
+                <a
+                  href="mailto:jdadvertising97@gmail.com"
+                  className="w-fit break-all text-sm text-black/50 transition-colors duration-300 hover:text-black"
+                >
+                  jdadvertising97@gmail.com
+                </a>
+              </div>
             </div>
           </div>
         </div>
