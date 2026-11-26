@@ -2,6 +2,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import {
   useCallback,
   useEffect,
@@ -32,6 +33,16 @@ const projects: WorkProject[] = [
   },
   {
     number: "02",
+    title: "NSBM & TIDAC Mugs",
+    category: "Custom Mug Printing",
+    description:
+      "Personalized ceramic mugs featuring NSBM Green University Town and TIDAC conference branding.",
+    image: "/work/IMG_0526.jpeg",
+    alt: "White ceramic mugs printed with NSBM Green University Town and TIDAC conference logos.",
+    aspect: "aspect-[3/2]",
+  },
+  {
+    number: "03",
     title: "Caféla",
     category: "Menu Printing",
     description:
@@ -41,7 +52,17 @@ const projects: WorkProject[] = [
     aspect: "aspect-[2/3]",
   },
   {
-    number: "03",
+    number: "04",
+    title: "Tasty Hub",
+    category: "Promotional Signage",
+    description:
+      "Freestanding restaurant advertising board featuring colourful food imagery and bold Sinhala typography.",
+    image: "/work/IMG_9782.jpeg",
+    alt: "Tasty Hub restaurant promotional display board with food photographs.",
+    aspect: "aspect-[2/3]",
+  },
+  {
+    number: "05",
     title: "Capital Restaurant",
     category: "Restaurant Menu Design",
     description:
@@ -51,7 +72,17 @@ const projects: WorkProject[] = [
     aspect: "aspect-[3/2]",
   },
   {
-    number: "04",
+    number: "06",
+    title: "Fresh Fruit Juice",
+    category: "Outdoor Advertising",
+    description:
+      "Colourful freestanding promotional signage highlighting fresh fruit juices and beverages.",
+    image: "/work/IMG_9781.jpeg",
+    alt: "Fresh Fruit Juice outdoor advertising board featuring colourful fruit drinks.",
+    aspect: "aspect-[2/3]",
+  },
+  {
+    number: "07",
     title: "Citypak",
     category: "Commercial Branding",
     description:
@@ -61,17 +92,37 @@ const projects: WorkProject[] = [
     aspect: "aspect-[5/4]",
   },
   {
-    number: "05",
+    number: "08",
+    title: "Teacher's Day Frames",
+    category: "Personalized Printing",
+    description:
+      "Custom commemorative photo frames with personalized portraits and Teacher's Day greetings.",
+    image: "/work/IMG_9530.jpeg",
+    alt: "Collection of black-framed personalized Teacher's Day commemorative prints.",
+    aspect: "aspect-[3/2]",
+  },
+  {
+    number: "09",
     title: "Cinnamon Leaf Oil",
     category: "Product Labels & Packaging",
     description:
-      "Botanical-inspired product label design for cinnamon leaf oil, combining natural colours and clear branding.",
+      "Botanical-inspired product label presentation combining natural colours and clear branding.",
     image: "/work/cinnamon_leaf_oil_quality_100.jpeg",
     alt: "Cinnamon leaf oil bottle featuring a green botanical product label.",
     aspect: "aspect-[2/3]",
   },
   {
-    number: "06",
+    number: "10",
+    title: "Espresso Bloom",
+    category: "Restaurant Menu Printing",
+    description:
+      "Spiral-bound restaurant menus with vibrant seafood imagery and full-colour printed covers.",
+    image: "/work/IMG_9947.jpeg",
+    alt: "Stack of Espresso Bloom spiral-bound restaurant food menus.",
+    aspect: "aspect-[2/3]",
+  },
+  {
+    number: "11",
     title: "Emerald Resort",
     category: "Menu Printing",
     description:
@@ -81,7 +132,17 @@ const projects: WorkProject[] = [
     aspect: "aspect-[2/3]",
   },
   {
-    number: "07",
+    number: "12",
+    title: "Lump Rice",
+    category: "Food Advertising",
+    description:
+      "Printed promotional display board featuring Sri Lankan rice and curry dishes.",
+    image: "/work/IMG_9864.jpeg",
+    alt: "Black Lump Rice advertising board featuring Sri Lankan food photography.",
+    aspect: "aspect-[2/3]",
+  },
+  {
+    number: "13",
     title: "The Dias Villa",
     category: "Exterior Signage",
     description:
@@ -91,7 +152,17 @@ const projects: WorkProject[] = [
     aspect: "aspect-[3/2]",
   },
   {
-    number: "08",
+    number: "14",
+    title: "The Blue Crab",
+    category: "Premium Menu Printing",
+    description:
+      "Kraft-style seafood restaurant menu covers with rustic twine binding and branded illustrations.",
+    image: "/work/IMG_0015.jpeg",
+    alt: "The Blue Crab Seafood Restaurant printed menus with kraft covers and twine bindings.",
+    aspect: "aspect-[2/3]",
+  },
+  {
+    number: "15",
     title: "Amari",
     category: "Large-Format Printing",
     description:
@@ -101,7 +172,17 @@ const projects: WorkProject[] = [
     aspect: "aspect-square",
   },
   {
-    number: "09",
+    number: "16",
+    title: "Synergy x Red Lobster",
+    category: "Event Banner Printing",
+    description:
+      "Large-format promotional banner for a live music event featuring Synergy Live Band and Red Lobster.",
+    image: "/work/IMG_0153.jpeg",
+    alt: "Printed Synergy Live Band and Red Lobster Friday Night Live Music promotional banner.",
+    aspect: "aspect-[2/3]",
+  },
+  {
+    number: "17",
     title: "Wok & Bowl",
     category: "Restaurant Menu Design",
     description:
@@ -111,7 +192,17 @@ const projects: WorkProject[] = [
     aspect: "aspect-[3/2]",
   },
   {
-    number: "10",
+    number: "18",
+    title: "J.L.H. Beach Restaurant",
+    category: "Restaurant Menu Boards",
+    description:
+      "Bold red printed menu boards displaying breakfast, lunch and dinner selections.",
+    image: "/work/IMG_0202.jpeg",
+    alt: "Two red J.L.H. Beach Restaurant printed menu boards.",
+    aspect: "aspect-[2/3]",
+  },
+  {
+    number: "19",
     title: "Red Lobster",
     category: "Premium Menu Covers",
     description:
@@ -121,17 +212,37 @@ const projects: WorkProject[] = [
     aspect: "aspect-[2/3]",
   },
   {
-    number: "11",
+    number: "20",
+    title: "Bravo Seafood Restaurant",
+    category: "Embossed Menu Covers",
+    description:
+      "Premium textured menu covers featuring embossed seafood restaurant branding.",
+    image: "/work/IMG_0306.jpeg",
+    alt: "Two textured black Bravo Seafood Restaurant menu covers with embossed logos.",
+    aspect: "aspect-[2/3]",
+  },
+  {
+    number: "21",
     title: "NSBM Sports Fiesta 2026",
     category: "Custom Awards & Recognition",
     description:
       "Commemorative award presentation featuring sports-themed graphics and personalized recognition details.",
     image: "/work/nsbm_sports_fiesta_award_quality_100.jpeg",
-    alt: "NSBM Sports Fiesta 2026 commemorative award displayed inside a clear presentation case.",
+    alt: "NSBM Sports Fiesta 2026 commemorative award inside a clear presentation case.",
     aspect: "aspect-[2/3]",
   },
   {
-    number: "12",
+    number: "22",
+    title: "Dodanduwa Diving Club",
+    category: "Specialty Branding",
+    description:
+      "Custom printed marine-themed graphics for Dodanduwa Diving & Water Sports Club.",
+    image: "/work/IMG_0489.jpeg",
+    alt: "Colourful Dodanduwa Diving and Water Sports Club branded equipment with ocean graphics.",
+    aspect: "aspect-[2/3]",
+  },
+  {
+    number: "23",
     title: "Salon Secret",
     category: "Glass Branding",
     description:
@@ -141,7 +252,17 @@ const projects: WorkProject[] = [
     aspect: "aspect-[2/3]",
   },
   {
-    number: "13",
+    number: "24",
+    title: "Hikka Deep Blue",
+    category: "Large-Format Printing",
+    description:
+      "Underwater-themed large-format promotional printing for Hikka Deep Blue Dive Center.",
+    image: "/work/IMG_0411.jpeg",
+    alt: "Large-format Hikka Deep Blue Dive Center promotional print featuring a diver and colourful marine life.",
+    aspect: "aspect-[2/3]",
+  },
+  {
+    number: "25",
     title: "Custom Photo Frames",
     category: "Personalized Printing",
     description:
@@ -153,9 +274,8 @@ const projects: WorkProject[] = [
 ];
 
 export default function WorkGallery() {
-  const [activeIndex, setActiveIndex] = useState<number | null>(
-    null
-  );
+  const [activeIndex, setActiveIndex] =
+    useState<number | null>(null);
 
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
@@ -180,7 +300,9 @@ export default function WorkGallery() {
 
   const nextProject = useCallback(() => {
     setActiveIndex((current) =>
-      current === null ? null : (current + 1) % projects.length
+      current === null
+        ? null
+        : (current + 1) % projects.length
     );
   }, []);
 
@@ -271,7 +393,7 @@ export default function WorkGallery() {
           </p>
         </div>
 
-        {/* MASONRY GRID */}
+        {/* MASONRY GALLERY */}
         <div className="columns-1 gap-8 md:columns-2 lg:gap-12">
           {projects.map((project, index) => (
             <article
@@ -281,7 +403,7 @@ export default function WorkGallery() {
               <button
                 type="button"
                 onClick={() => openLightbox(index)}
-                aria-label={`View ${project.title} photograph`}
+                aria-label={`View ${project.title} project image`}
                 className="block w-full cursor-zoom-in text-left"
               >
                 <div
@@ -301,7 +423,7 @@ export default function WorkGallery() {
                 </div>
               </button>
 
-              {/* PROJECT DESCRIPTION */}
+              {/* PROJECT DETAILS */}
               <div className="mt-5 flex items-start gap-5 border-t border-black/15 pt-5">
                 <span className="shrink-0 pt-1 text-xs font-medium tracking-[0.2em] text-black/35">
                   {project.number}
@@ -337,7 +459,7 @@ export default function WorkGallery() {
             </p>
           </div>
 
-          <a
+          <Link
             href="/contact"
             className="group flex w-fit items-center gap-5 text-xs font-semibold uppercase tracking-[0.2em]"
           >
@@ -346,7 +468,7 @@ export default function WorkGallery() {
             <span className="flex h-12 w-12 items-center justify-center rounded-full border border-black/30 transition-all duration-300 group-hover:bg-black group-hover:text-white">
               ↗
             </span>
-          </a>
+          </Link>
         </div>
       </div>
 
@@ -360,7 +482,7 @@ export default function WorkGallery() {
           aria-describedby="work-lightbox-description"
           className="fixed inset-0 z-[100] flex flex-col overflow-hidden bg-[#090909] text-white"
         >
-          {/* LIGHTBOX HEADER */}
+          {/* HEADER */}
           <div className="relative z-10 flex shrink-0 items-center justify-between gap-4 border-b border-white/15 px-5 py-4 md:px-10 md:py-5">
             <div className="min-w-0">
               <p className="mb-2 text-[9px] uppercase tracking-[0.25em] text-white/40 md:text-[10px]">
@@ -386,7 +508,7 @@ export default function WorkGallery() {
             </button>
           </div>
 
-          {/* FULL IMAGE */}
+          {/* FULL-SCREEN IMAGE */}
           <div className="relative mx-auto flex min-h-0 w-full max-w-[1600px] flex-1 items-center justify-center px-4 py-5 md:px-12 md:py-8">
             <div className="relative h-full w-full">
               <Image
