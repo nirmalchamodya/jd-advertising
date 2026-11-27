@@ -16,7 +16,7 @@ import { FaTiktok } from "react-icons/fa6";
 const GOOGLE_MAPS_LINK =
   "https://maps.app.goo.gl/LFtWsan13nuwPiZR8";
 
-// Exact location coordinates
+// Exact business location
 const GOOGLE_MAPS_EMBED =
   "https://www.google.com/maps?q=6.1893402%2C80.0985342&z=18&output=embed";
 
@@ -54,6 +54,7 @@ export default function AboutPage() {
             </p>
 
             <div className="mt-8 max-w-[540px]">
+              {/* GOOGLE MAP */}
               <div className="overflow-hidden border border-black/15 bg-white">
                 <iframe
                   src={GOOGLE_MAPS_EMBED}
@@ -65,6 +66,7 @@ export default function AboutPage() {
                 />
               </div>
 
+              {/* LOCATION DETAILS */}
               <div className="mt-5 flex flex-wrap items-end justify-between gap-5">
                 <div>
                   <p className="text-[10px] uppercase tracking-[0.28em] text-black/40">
@@ -123,7 +125,6 @@ export default function AboutPage() {
                     aria-hidden="true"
                     className="h-3 w-3 shrink-0 transition-colors duration-300 group-hover:text-[#00aeef]"
                   />
-
                   <span>Call</span>
                 </a>
 
@@ -138,7 +139,6 @@ export default function AboutPage() {
                     aria-hidden="true"
                     className="h-4 w-4 shrink-0 transition-colors duration-300 group-hover:text-[#25D366]"
                   />
-
                   <span>WhatsApp</span>
                 </a>
 
@@ -153,7 +153,6 @@ export default function AboutPage() {
                     aria-hidden="true"
                     className="h-3.5 w-3.5 shrink-0 transition-colors duration-300 group-hover:text-[#1877F2]"
                   />
-
                   <span>Facebook</span>
                 </a>
 
@@ -168,7 +167,6 @@ export default function AboutPage() {
                     aria-hidden="true"
                     className="h-4 w-4 shrink-0 transition-colors duration-300 group-hover:text-[#E4405F]"
                   />
-
                   <span>Instagram</span>
                 </a>
 
@@ -183,7 +181,6 @@ export default function AboutPage() {
                     aria-hidden="true"
                     className="h-4 w-4 shrink-0 transition-colors duration-300 group-hover:text-[#ff0050]"
                   />
-
                   <span>TikTok</span>
                 </a>
 
@@ -196,26 +193,81 @@ export default function AboutPage() {
                     aria-hidden="true"
                     className="h-3.5 w-3.5 shrink-0 transition-colors duration-300 group-hover:text-[#00aeef]"
                   />
-
                   <span>Email</span>
                 </a>
               </div>
 
-              {/* CONTACT DETAILS */}
-              <div className="mt-5 flex flex-col gap-2">
-                <a
-                  href="tel:+94754044966"
-                  className="w-fit text-sm text-black/50 transition-colors duration-300 hover:text-black"
-                >
-                  +94 75 404 4966
-                </a>
+              {/* COMPLETE CONTACT DETAILS */}
+              <div className="mt-8 border-t border-black/15">
+                {/* HOT LINE */}
+                <div className="grid grid-cols-[85px_minmax(0,1fr)] gap-4 border-b border-black/10 py-4 sm:grid-cols-[110px_minmax(0,1fr)]">
+                  <span className="pt-1 text-[10px] font-medium uppercase tracking-[0.18em] text-black/40">
+                    Hot Line
+                  </span>
 
-                <a
-                  href="mailto:jdadvertising97@gmail.com"
-                  className="w-fit break-all text-sm text-black/50 transition-colors duration-300 hover:text-black"
-                >
-                  jdadvertising97@gmail.com
-                </a>
+                  <a
+                    href="tel:+94912262430"
+                    className="w-fit text-sm leading-6 text-black/70 transition-colors duration-300 hover:text-black"
+                  >
+                    091 2262 430
+                  </a>
+                </div>
+
+                {/* MOBILE NUMBERS */}
+                <div className="grid grid-cols-[85px_minmax(0,1fr)] gap-4 border-b border-black/10 py-4 sm:grid-cols-[110px_minmax(0,1fr)]">
+                  <span className="pt-1 text-[10px] font-medium uppercase tracking-[0.18em] text-black/40">
+                    Mobile
+                  </span>
+
+                  <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm leading-6 text-black/70">
+                    <a
+                      href="tel:+94754044966"
+                      className="transition-colors duration-300 hover:text-black"
+                    >
+                      075 4044 966
+                    </a>
+
+                    <span className="text-black/25">/</span>
+
+                    <a
+                      href="tel:+94763971875"
+                      className="transition-colors duration-300 hover:text-black"
+                    >
+                      076 397 1875
+                    </a>
+                  </div>
+                </div>
+
+                {/* EMAIL ADDRESS */}
+                <div className="grid grid-cols-[85px_minmax(0,1fr)] gap-4 border-b border-black/10 py-4 sm:grid-cols-[110px_minmax(0,1fr)]">
+                  <span className="pt-1 text-[10px] font-medium uppercase tracking-[0.18em] text-black/40">
+                    Email
+                  </span>
+
+                  <a
+                    href="mailto:jdadvertising97@gmail.com"
+                    className="w-fit break-all text-sm leading-6 text-black/70 transition-colors duration-300 hover:text-black"
+                  >
+                    jdadvertising97@gmail.com
+                  </a>
+                </div>
+
+                {/* FULL BUSINESS ADDRESS */}
+                <div className="grid grid-cols-[85px_minmax(0,1fr)] gap-4 border-b border-black/10 py-4 sm:grid-cols-[110px_minmax(0,1fr)]">
+                  <span className="pt-1 text-[10px] font-medium uppercase tracking-[0.18em] text-black/40">
+                    Address
+                  </span>
+
+                  <address className="max-w-md text-sm not-italic leading-6 text-black/70">
+                    JD Advertising & Digital Solutions,
+                    <br />
+                    1st Floor, Aluthwala Rd,
+                    <br />
+                    Meetiyagoda, Galle,
+                    <br />
+                    Sri Lanka 80250
+                  </address>
+                </div>
               </div>
             </div>
           </div>
